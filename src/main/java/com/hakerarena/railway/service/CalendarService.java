@@ -17,8 +17,8 @@ public class CalendarService {
 
     public String createCalendarInvite(TrainDetails details) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
-        Date departureDate = sdf.parse(details.getDepartureTime());
-        Date arrivalDate = sdf.parse(details.getArrivalTime());
+        Date departureDate = sdf.parse(details.getDepartureDate());
+        Date arrivalDate = sdf.parse(details.getArrivalDate());
 
         // Create calendar
         Calendar calendar = new Calendar();
@@ -27,11 +27,15 @@ public class CalendarService {
         calendar.getProperties().add(CalScale.GREGORIAN);
 
         // Create event
-        VEvent event = new VEvent(new DateTime(departureDate), new DateTime(arrivalDate),
-                "Train to " + details.getToStation());
-        event.getProperties().add(new Location(details.getFromStation() + " to " + details.getToStation()));
-        event.getProperties().add(new Description("Train Number: " + details.getTrainNumber() +
-                "\nPNR: " + details.getPnr()));
+        VEvent event = new VEvent(
+                new DateTime(departureDate),
+                new DateTime(arrivalDate),
+                "Train to " + details.getArrivalStation());
+
+        event.getProperties().add(new Location(details.getDepartureStation() + " to " + details.getArrivalStation()));
+        event.getProperties().add(new Description(
+                "Train Number: " + details.getTrainNumber() + " / " + details.getTrainName() +
+                        "\nPNR: " + details.getPnr()));
 
         calendar.getComponents().add(event);
 

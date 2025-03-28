@@ -23,6 +23,7 @@ public class InviteController {
         try {
             var details = pdfService.extractDetails(pdfPath);
             String filePath = calendarService.createCalendarInvite(details);
+            System.out.println(details);
             emailService.sendEmail(email, "Train Journey Details", "Here is your train invite.", filePath);
             return "Invite sent successfully!";
         } catch (Exception e) {
