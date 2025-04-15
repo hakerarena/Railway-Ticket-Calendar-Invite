@@ -39,7 +39,7 @@ public class InviteController {
     public String generateInvite(@RequestPart("file") MultipartFile file, @RequestParam("email") String email) {
         try {
             // Save the uploaded file to a temporary location
-            String tempFilePath = "D:/Projects/IRCTC-invite/Railway-Ticket-Calendar-Invite/Files/"
+            String tempFilePath = "../Files/"
                     + file.getOriginalFilename();
             file.transferTo(new java.io.File(tempFilePath));
 
