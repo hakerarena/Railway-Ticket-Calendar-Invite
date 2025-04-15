@@ -3,14 +3,21 @@ FROM eclipse-temurin:24-jdk-alpine AS build
 
 WORKDIR /app
 
-# Copy pom.xml and download dependencies first (for Docker caching)
-COPY pom.xml .
-COPY .mvn .mvn
+# Copy Maven wrapper and give it execute permissions
 COPY mvnw .
+RUN chmod +x mvnw
+
+# Copy wrapper directory
+COPY .mvn .mvn
+
+# Copy pom.xml and download dependencies first
+COPY pom.xml .
 RUN ./mvnw dependency:go-offline
 
-# Now copy the rest of the source and build the app
+# Copy the rest of the app source code
 COPY src ./src
+
+# Build the JAR
 RUN ./mvnw clean package -DskipTests
 
 # ===== Stage 2: Run the app =====
@@ -18,11 +25,12 @@ FROM eclipse-temurin:24-jdk-alpine
 
 WORKDIR /app
 
-# Copy the JAR from the build stage
+# Copy the built JAR
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose Spring Boot default port
+# Expose the default Spring Boot port
 EXPOSE 8080
 
-# Run the app
+# Start the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
