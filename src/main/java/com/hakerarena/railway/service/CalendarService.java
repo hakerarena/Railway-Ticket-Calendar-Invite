@@ -32,7 +32,7 @@ public class CalendarService {
                 new DateTime(arrivalDate),
                 "Train to " + details.getArrivalStation());
 
-        event.getProperties().add(new Location(details.getDepartureStation() + " to " + details.getArrivalStation()));
+        event.getProperties().add(new Location(details.getDepartureStation()));
         event.getProperties().add(new Description(
                 "Train Number: " + details.getTrainNumber() + " / " + details.getTrainName() +
                         "\nPNR: " + details.getPnr()));
