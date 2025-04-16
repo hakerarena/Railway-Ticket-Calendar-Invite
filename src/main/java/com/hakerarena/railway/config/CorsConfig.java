@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://irctc-tkt-app.netlify.app")
+                        .allowedOrigins("https://irctc-tkt-app.netlify.app", "http://localhost:4200")
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);

@@ -1,20 +1,29 @@
 package com.hakerarena.railway.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-public class InviteService {
-    @Autowired
-    private PdfService pdfService;
-    @Autowired
-    private CalendarService calendarService;
-    @Autowired
-    private EmailService emailService;
+import com.hakerarena.railway.model.SuccessResponse;
 
-    public String generateInvite(MultipartFile file, String email) {
+@Service
+public class InviteService {
+    private final PdfService pdfService;
+    private final CalendarService calendarService;
+    private final EmailService emailService;
+
+    @Autowired
+    public InviteService(PdfService pdfService, CalendarService calendarService, EmailService emailService) {
+        this.pdfService = pdfService;
+        this.calendarService = calendarService;
+        this.emailService = emailService;
+    }
+
+    public SuccessResponse generateInvite(MultipartFile file, String email) {
+        SuccessResponse response = new SuccessResponse();
         try {
             // Save the uploaded file to a temporary location
-            String tempFilePath = System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename();
+            String tempFilePath = System.getProperty("java.io.tmpdir") + java.io.File.separator + file.getOriginalFilename();
             file.transferTo(new java.io.File(tempFilePath));
 
             // Process the file and generate the invite
@@ -23,11 +32,18 @@ public class InviteService {
             emailService.sendEmail(email, "Train Journey Details", "Here is your train invite.", filePath);
 
             // Clean up the temporary file
-            new java.io.File(tempFilePath).delete();
-
-            return "Invite sent successfully!";
+            try {
+                java.nio.file.Files.delete(java.nio.file.Paths.get(tempFilePath));
+                response.setSuccess(true);
+            } catch (Exception deleteException) {
+                response.setSuccess(false);
+                response.setMessage("Error deleting temporary file: " + deleteException.getMessage());
+            }
+            response.setMessage("Invite sent successfully!");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            response.setSuccess(false);
+            response.setMessage("Error: " + e.getMessage());
         }
+        return response;
     }
 }
