@@ -39,8 +39,7 @@ public class InviteController {
     public String generateInvite(@RequestPart("file") MultipartFile file, @RequestParam("email") String email) {
         try {
             // Save the uploaded file to a temporary location
-            String tempFilePath = "../Files/"
-                    + file.getOriginalFilename();
+            String tempFilePath = System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename();
             file.transferTo(new java.io.File(tempFilePath));
 
             // Process the file and generate the invite
