@@ -1,22 +1,29 @@
 package com.hakerarena.railway.service;
 
-import net.fortuna.ical4j.data.CalendarOutputter;
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.*;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.stereotype.Service;
 
 import com.hakerarena.railway.model.TrainDetails;
 
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Version;
 
 @Service
 public class CalendarService {
 
     public String createCalendarInvite(TrainDetails details) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone("IST"));
         Date departureDate = sdf.parse(details.getDepartureDate());
         Date arrivalDate = sdf.parse(details.getArrivalDate());
 
@@ -34,8 +41,8 @@ public class CalendarService {
 
         event.getProperties().add(new Location(details.getDepartureStation()));
         event.getProperties().add(new Description(
-                "Train Number: " + details.getTrainNumber() + " / " + details.getTrainName() +
-                        "\nPNR: " + details.getPnr()));
+                "Train Number: " + details.getTrainNumber() + " / " + details.getTrainName()
+                + "\nPNR: " + details.getPnr()));
 
         calendar.getComponents().add(event);
 
